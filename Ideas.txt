@@ -1,0 +1,16 @@
+Hola marto subo un archivo donde explayar contenido.. ya que no tengo nada de ABB, pero se algo
+
+el ABB segun lo q yo se. y enseño es un nodo con dos punteros (izq) --- (der), y el dato
+
+          
+					nodo
+				   [dato]
+					/  \
+				   V	V
+				(izq) 	(der)
+
+
+#se va a modificar segun las cosas q vallamos agregando
+nodo_crear(dato);
+
+
