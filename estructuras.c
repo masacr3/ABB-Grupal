@@ -36,3 +36,16 @@ nodo_t* nodo_crear(const char* clave, void* dato ){
 
   return nodo;
 }
+
+// estube viendo las primitivas .h es tipo el hash
+
+struct abb {
+    
+    //punteros a funciones
+    abb_comparar_clave_t comparar_clave;
+    abb_destruir_dato_t destruir_dato;
+    
+    //data
+    nodo_t *raiz;
+    size_t cantidad;
+};
