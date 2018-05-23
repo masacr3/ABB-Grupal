@@ -1,3 +1,11 @@
+#ifndef ABB_H
+#define ABB_H
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
+
 typedef struct abb abb_t;
 
 typedef int (*abb_comparar_clave_t) (const char *, const char *);
@@ -15,7 +23,7 @@ size_t abb_cantidad(abb_t *arbol);
 
 void abb_destruir(abb_t *arbol);
 
-// iterador
+// iterador externo
 
 typedef struct abb_iter abb_iter_t;
 
@@ -28,3 +36,5 @@ void abb_iter_in_destruir(abb_iter_t* iter);
 // iterador interno
 
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
+
+#endif // ABB_H
