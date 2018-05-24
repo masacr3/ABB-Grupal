@@ -38,6 +38,7 @@ abb_nodo_t* abb_nodo_buscar(abb_t* arbol,abb_nodo_t* nodo,const char* clave){
   return abb_nodo_buscar(arbol,nodo->derecha,clave);
 }
 
+
 abb_nodo_t* abb_padre_buscar(abb_t* arbol,abb_nodo_t* padre,const char* clave){
   //if (!padre) return NULL;
   if (arbol->comparar_clave(clave,padre->clave)==0) return padre;
@@ -147,4 +148,21 @@ void abb_iter_in_order(abb_nodo_t* nodo,bool visitar(const char* clave, void* da
 
 void abb_in_order(abb_t* arbol, bool visitar(const char* clave, void* dato, void* extra), void* extra){
   abb_iter_in_order(arbol->raiz,visitar,extra);
+}
+
+//-----------------------------
+abb_iter_t *abb_iter_in_crear(const abb_t *arbol){
+	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+	
+	if (!iter) return NULL;
+	
+	iter->abb = arbol;
+	iter->pila = pila_crear();
+	
+	if (!iter->pila){
+		free(iter);
+		return NULL;
+	}
+	//#apilar < aca
+	return iter;
 }
