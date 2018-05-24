@@ -7,6 +7,14 @@
 #define RAMA_DERECHA 1
 #define RAMA_IZQUIERDA -1
 
+//---------- struct iterador
+struct abb_iter{
+	const abb_t* abb;
+	pila_t* pila;
+};
+
+
+
 abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){
   abb_t* abb = malloc (sizeof(abb_t));
 
