@@ -71,11 +71,17 @@ abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){
   return abb;
 }
 
+//leo: hola marto veo que esto se puede hacer mas lindo
 abb_nodo_t* abb_nodo_buscar(const abb_t* arbol,abb_nodo_t* nodo,const char* clave){
   if (!nodo) return NULL;
+  int rama = arbol->comparar_clave(clave,nodo->clave); //
+  /*
   if (arbol->comparar_clave(clave,nodo->clave)==0) return nodo;
   if (arbol->comparar_clave(clave,nodo->clave)<0) return abb_nodo_buscar(arbol,nodo->izquierda,clave);
-  return abb_nodo_buscar(arbol,nodo->derecha,clave);
+  return abb_nodo_buscar(arbol,nodo->derecha,clave);*/
+  if (!rama) return nodo;
+  
+  return abb_nodo_buscar(arbol, rama > 0 ? nodo->derecha : nodo->izquierda, clave);
 }
 
 abb_nodo_t* abb_padre_buscar(const abb_t* arbol,abb_nodo_t* padre,const char* clave){
