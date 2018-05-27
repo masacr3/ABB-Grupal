@@ -1,0 +1,46 @@
+leo@masacr3:~/github/ABB-Grupal$ make run
+cc -g -O2 -std=c99 -Wall -Wconversion -Wno-sign-conversion -Wbad-function-cast -Wshadow -Wpointer-arith -Wunreachable-code -Wformat=2 -Werror testing.c abb.c pruebas_catedra.c main.c pila.c -o abb
+./abb
+~~~ PRUEBAS ALUMNO ~~~
+cantidad es 0... OK
+obtener false... OK
+borrar false... OK
+pertenece false... OK
+Arbol vacio... OK
+guardo dato... OK
+guardo dato2... OK
+guardo dato3... OK
+(a) pertenece ... OK
+(b) pertenece ... OK
+(c) pertenece ... OK
+(d) no pertenece ... OK
+Arbol vacio... OK
+guardo dato4... OK
+guardo dato2... OK
+guardo dato3: ERROR
+pruebas_catedra.c:91: abb_guardar(abb,clave3,&dato3)
+guardo dato7... OK
+guardo dato1: ERROR
+pruebas_catedra.c:93: abb_guardar(abb,clave1,&dato1)
+guardo dato6: ERROR
+pruebas_catedra.c:94: abb_guardar(abb,clave6,&dato6)
+guardo dato8: ERROR
+pruebas_catedra.c:95: abb_guardar(abb,clave8,&dato8)
+guardo dato5: ERROR
+pruebas_catedra.c:96: abb_guardar(abb,clave5,&dato5)
+(a) pertenece : ERROR
+pruebas_catedra.c:98: abb_pertenece(abb,clave1)
+(b) pertenece ... OK
+(c) pertenece : ERROR
+pruebas_catedra.c:100: abb_pertenece(abb,clave3)
+(d) pertenece ... OK
+(e) pertenece : ERROR
+pruebas_catedra.c:102: abb_pertenece(abb,clave5)
+(f) pertenece : ERROR
+pruebas_catedra.c:103: abb_pertenece(abb,clave6)
+(g) pertenece ... OK
+(h) pertenece : ERROR
+pruebas_catedra.c:105: abb_pertenece(abb,clave8)
+(noesta) no pertenece ... OK
+Makefile:11: fallo en las instrucciones para el objetivo 'run'
+make: *** [run] Error 1
