@@ -8,6 +8,4 @@ HFILES=abb.h pila.h testing.h
 all:
 	$(CC) $(CFLAGS) $(CFILES) -o $(EXEC)
 run: all
-	time -f %e ./$(EXEC)
-valgrind: all
-	time -f %e valgrind	$(VFLAGS)	./$(EXEC)
+	./$(EXEC)
