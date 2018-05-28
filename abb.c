@@ -80,7 +80,7 @@ abb_nodo_t* abb_nodo_buscar(const abb_t* arbol,abb_nodo_t* nodo,const char* clav
   if (arbol->comparar_clave(clave,nodo->clave)<0) return abb_nodo_buscar(arbol,nodo->izquierda,clave);
   return abb_nodo_buscar(arbol,nodo->derecha,clave);*/
   if (!rama) return nodo;
-  
+
   return abb_nodo_buscar(arbol, rama > 0 ? nodo->derecha : nodo->izquierda, clave);
 }
 
@@ -113,6 +113,44 @@ size_t abb_cantidad(abb_t* arbol){
   return arbol->cantidad;
 }
 
+
+bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato){
+  int rama = arbol->comparar_clave(clave,raiz->clave);
+
+  if(!rama){
+
+    if (arbol->destruir_dato) arbol->destruir_dato(raiz->dato);
+
+    //actualizo
+    raiz->dato = dato;
+    arbol->cantidad++;
+    return true;
+  }
+
+  if(rama == RAMA_IZQUIERDA && !raiz->izquierda){
+    abb_nodo_t* nodo = nodo_crear(clave,dato);
+
+    if(!nodo) return false;
+
+    raiz->izquierda = nodo;
+    arbol->cantidad++;
+    return true;
+  }
+
+  if (rama == RAMA_DERECHA && !raiz->derecha){
+    abb_nodo_t* nodo = nodo_crear(clave,dato);
+
+    if(!nodo) return false;
+
+    raiz->derecha = nodo;
+    arbol->cantidad++;
+    return true;
+  }
+
+  //sigue buscando
+  return insertar_nodo(arbol, rama == RAMA_DERECHA ? raiz->derecha : raiz->izquierda, clave, dato);
+}
+
 bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
 
   if (!arbol->raiz){
@@ -124,7 +162,7 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
     arbol->raiz=nodo;
     return true;
   }
-
+/*
   abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
 
   if (nodo){
@@ -146,6 +184,8 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
   else padre->derecha=hijo;
 
   return true;
+*/
+  return insertar_nodo(arbol, arbol->raiz, clave, dato);
 }
 
 void* abb_borrar_nodo_hoja(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const char* clave){
