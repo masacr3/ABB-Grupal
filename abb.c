@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdio.h>
 #include "abb.h"
 #include "pila.h"
 
@@ -103,10 +104,28 @@ void* abb_obtener(const abb_t* arbol,const char* clave){
   return nodo->dato;
 }
 
+bool _abb_pertenece(const abb_t *arbol, const abb_nodo_t* raiz ,const char *clave){
+
+  if (!raiz) return false;
+
+  int rama = arbol->comparar_clave(clave, raiz->clave);
+
+  if(rama == 0) return true;
+
+  if(rama > 0) return _abb_pertenece(arbol, raiz->derecha,clave);
+
+  return _abb_pertenece(arbol, raiz->izquierda,clave);
+}
+
 bool abb_pertenece(const abb_t *arbol, const char *clave){
+  /*
   abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
   if (!nodo) return false;
   return true;
+  */
+  if (!arbol->raiz) return false;
+
+  return _abb_pertenece(arbol,arbol->raiz,clave);
 }
 
 size_t abb_cantidad(abb_t* arbol){
@@ -126,7 +145,7 @@ bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato
     arbol->cantidad++;
   }
 
-  if(rama == RAMA_IZQUIERDA ){
+  if(rama < 0 ){
 
     if(raiz->izquierda) return insertar_nodo(arbol,raiz->izquierda,clave,dato);
 
@@ -138,7 +157,7 @@ bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato
     arbol->cantidad++;
   }
 
-  if (rama == RAMA_DERECHA ){
+  if (rama > 0 ){
 
     if(raiz->derecha) return insertar_nodo(arbol,raiz->derecha,clave,dato);
 
@@ -154,6 +173,7 @@ bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato
   //return insertar_nodo(arbol, rama == RAMA_DERECHA ? raiz->derecha : raiz->izquierda, clave, dato);
 }
 
+
 bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
 
   if (!arbol->raiz){
@@ -165,7 +185,7 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
     arbol->raiz=nodo;
     return true;
   }
-/*
+  /*
   abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
 
   if (nodo){
@@ -187,9 +207,11 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
   else padre->derecha=hijo;
 
   return true;
-*/
+  */
   return insertar_nodo(arbol, arbol->raiz, clave, dato);
 }
+
+
 
 void* abb_borrar_nodo_hoja(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const char* clave){
   arbol->cantidad--;
@@ -264,6 +286,7 @@ void abb_destruir(abb_t* arbol){
   abb_destruir_nodos(arbol->raiz,arbol->destruir_dato);
   free(arbol);
 }
+
 
 /*******************************************************************************
  *                           ITERADOR INTERNO
