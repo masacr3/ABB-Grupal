@@ -117,38 +117,41 @@ size_t abb_cantidad(abb_t* arbol){
 bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato){
   int rama = arbol->comparar_clave(clave,raiz->clave);
 
-  if(!rama){
+  if(rama == 0){
 
     if (arbol->destruir_dato) arbol->destruir_dato(raiz->dato);
 
     //actualizo
     raiz->dato = dato;
     arbol->cantidad++;
-    return true;
   }
 
-  if(rama == RAMA_IZQUIERDA && !raiz->izquierda){
+  if(rama == RAMA_IZQUIERDA ){
+
+    if(raiz->izquierda) return insertar_nodo(arbol,raiz->izquierda,clave,dato);
+
     abb_nodo_t* nodo = nodo_crear(clave,dato);
 
     if(!nodo) return false;
 
     raiz->izquierda = nodo;
     arbol->cantidad++;
-    return true;
   }
 
-  if (rama == RAMA_DERECHA && !raiz->derecha){
+  if (rama == RAMA_DERECHA ){
+
+    if(raiz->derecha) return insertar_nodo(arbol,raiz->derecha,clave,dato);
+
     abb_nodo_t* nodo = nodo_crear(clave,dato);
 
     if(!nodo) return false;
 
     raiz->derecha = nodo;
     arbol->cantidad++;
-    return true;
   }
-
+  return true;
   //sigue buscando
-  return insertar_nodo(arbol, rama == RAMA_DERECHA ? raiz->derecha : raiz->izquierda, clave, dato);
+  //return insertar_nodo(arbol, rama == RAMA_DERECHA ? raiz->derecha : raiz->izquierda, clave, dato);
 }
 
 bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
