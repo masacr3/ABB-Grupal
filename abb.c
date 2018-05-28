@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stddef.h>
-#include <stdio.h>
 #include "abb.h"
 #include "pila.h"
 
@@ -98,10 +97,24 @@ abb_nodo_t* abb_padre_buscar(const abb_t* arbol,abb_nodo_t* padre,const char* cl
   return abb_nodo_buscar(arbol,padre->derecha,clave);
 }
 
+void* _abb_obtener(const abb_t *arbol, const abb_nodo_t* raiz ,const char *clave){
+
+  if (!raiz) return NULL;
+
+  int rama = arbol->comparar_clave(clave, raiz->clave);
+
+  if(rama == 0) return raiz->dato;
+
+  if(rama > 0) return _abb_obtener(arbol, raiz->derecha,clave);
+
+  return _abb_obtener(arbol, raiz->izquierda,clave);
+}
+
+
+
 void* abb_obtener(const abb_t* arbol,const char* clave){
-  abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
-  if (!nodo) return NULL;
-  return nodo->dato;
+  if (!arbol->raiz) return NULL;
+  return _abb_obtener(arbol, arbol->raiz, clave);
 }
 
 bool _abb_pertenece(const abb_t *arbol, const abb_nodo_t* raiz ,const char *clave){
