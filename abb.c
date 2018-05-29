@@ -71,74 +71,52 @@ abb_t* abb_crear(abb_comparar_clave_t cmp, abb_destruir_dato_t destruir_dato){
   return abb;
 }
 
-//leo: hola marto veo que esto se puede hacer mas lindo
-abb_nodo_t* abb_nodo_buscar(const abb_t* arbol,abb_nodo_t* nodo,const char* clave){
-  if (!nodo) return NULL;
-  int rama = arbol->comparar_clave(clave,nodo->clave); //
-  /*
-  if (arbol->comparar_clave(clave,nodo->clave)==0) return nodo;
-  if (arbol->comparar_clave(clave,nodo->clave)<0) return abb_nodo_buscar(arbol,nodo->izquierda,clave);
-  return abb_nodo_buscar(arbol,nodo->derecha,clave);*/
-  if (!rama) return nodo;
+//buscar
 
-  return abb_nodo_buscar(arbol, rama > 0 ? nodo->derecha : nodo->izquierda, clave);
-}
-
-abb_nodo_t* abb_padre_buscar(const abb_t* arbol,abb_nodo_t* padre,const char* clave){
-  if (!padre) return NULL;
-  //if (arbol->comparar_clave(clave,padre->clave)==0) return padre;
-  if (arbol->comparar_clave(clave,padre->clave)<0){
-    if (!padre->izquierda) return padre;
-    if (arbol->comparar_clave(clave,padre->izquierda->clave)==0) return padre;
-    return abb_nodo_buscar(arbol,padre->izquierda,clave);
-  }
-  if (!padre->derecha) return padre;
-  if (arbol->comparar_clave(clave,padre->derecha->clave)==0) return padre;
-  return abb_nodo_buscar(arbol,padre->derecha,clave);
-}
-
-void* _abb_obtener(const abb_t *arbol, const abb_nodo_t* raiz ,const char *clave){
-
-  if (!raiz) return NULL;
-
-  int rama = arbol->comparar_clave(clave, raiz->clave);
-
-  if(rama == 0) return raiz->dato;
-
-  if(rama > 0) return _abb_obtener(arbol, raiz->derecha,clave);
-
-  return _abb_obtener(arbol, raiz->izquierda,clave);
-}
-
-
-
-void* abb_obtener(const abb_t* arbol,const char* clave){
-  if (!arbol->raiz) return NULL;
-  return _abb_obtener(arbol, arbol->raiz, clave);
-}
-
-bool _abb_pertenece(const abb_t *arbol, const abb_nodo_t* raiz ,const char *clave){
+abb_nodo_t* abb_nodo_buscar(const abb_t *arbol, abb_nodo_t* raiz ,const char *clave){
 
   if (!raiz) return false;
 
   int rama = arbol->comparar_clave(clave, raiz->clave);
 
-  if(rama == 0) return true;
+  if(rama == 0) return raiz;
 
-  if(rama > 0) return _abb_pertenece(arbol, raiz->derecha,clave);
+  if(rama > 0) return abb_nodo_buscar(arbol, raiz->derecha,clave);
 
-  return _abb_pertenece(arbol, raiz->izquierda,clave);
+  return abb_nodo_buscar(arbol, raiz->izquierda,clave);
+}
+
+abb_nodo_t* abb_padre_buscar(const abb_t* arbol,abb_nodo_t* padre,const char* clave){
+  if (!padre) return NULL;
+
+  int rama = arbol->comparar_clave(clave,padre->clave);
+
+  if( rama > 0 && padre->derecha){
+      int es_el_padre = arbol->comparar_clave(clave, padre->derecha->clave) == 0;
+
+      return es_el_padre ? padre : abb_padre_buscar(arbol, padre->derecha, clave);
+  }
+
+  if( rama < 0 && padre->izquierda){
+      int es_el_padre = arbol->comparar_clave(clave, padre->izquierda->clave) == 0;
+
+      return es_el_padre ? padre : abb_padre_buscar(arbol, padre->izquierda,clave);
+  }
+
+  return padre;
+
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave){
-  /*
-  abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
-  if (!nodo) return false;
-  return true;
-  */
-  if (!arbol->raiz) return false;
+  abb_nodo_t* nodo = abb_nodo_buscar(arbol, arbol->raiz,clave);
 
-  return _abb_pertenece(arbol,arbol->raiz,clave);
+  return !nodo ? false : true;
+}
+
+void* abb_obtener(const abb_t* arbol,const char* clave){
+  abb_nodo_t* nodo = abb_nodo_buscar(arbol, arbol->raiz,clave);
+
+  return !nodo ? NULL : nodo->dato;
 }
 
 size_t abb_cantidad(abb_t* arbol){
@@ -198,29 +176,7 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
     arbol->raiz=nodo;
     return true;
   }
-  /*
-  abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
 
-  if (nodo){
-
-    if (arbol->destruir_dato) arbol->destruir_dato(nodo->dato);
-
-    nodo->dato=dato;
-    return true;
-  }
-
-  arbol->cantidad++;
-  abb_nodo_t* hijo=nodo_crear(clave,dato);
-  abb_nodo_t* padre=abb_padre_buscar(arbol,arbol->raiz,clave);
-
-  if (!padre) return false;
-
-  if (arbol->comparar_clave(clave,padre->clave)<0) padre->izquierda=hijo;
-
-  else padre->derecha=hijo;
-
-  return true;
-  */
   return insertar_nodo(arbol, arbol->raiz, clave, dato);
 }
 
