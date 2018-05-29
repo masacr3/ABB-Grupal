@@ -2,6 +2,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stddef.h>
+
+#include <stdio.h>
+
 #include "abb.h"
 #include "pila.h"
 
@@ -103,8 +106,16 @@ abb_nodo_t* abb_padre_buscar(const abb_t* arbol,abb_nodo_t* padre,const char* cl
       return es_el_padre ? padre : abb_padre_buscar(arbol, padre->izquierda,clave);
   }
 
-  return padre;
+  return NULL;
 
+}
+
+void* buscar_padre(abb_t* arbol, const char* clave){
+  abb_nodo_t* nodo = abb_padre_buscar(arbol, arbol->raiz, clave);
+
+  printf("padre es %d", !nodo ? 101009 : *(int*)nodo->dato);
+
+  return !nodo ? NULL : nodo->dato;
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave){
@@ -185,8 +196,13 @@ bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
 void* abb_borrar_nodo_hoja(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const char* clave){
   arbol->cantidad--;
   void* dato=nodo->dato;
-  if (padre->izquierda && arbol->comparar_clave(clave,padre->izquierda->clave)==0) padre->izquierda=NULL;
-  else padre->derecha=NULL;
+
+  if ( padre ){
+    if (padre->izquierda && arbol->comparar_clave(clave,padre->izquierda->clave)==0) padre->izquierda=NULL;
+    else padre->derecha=NULL;
+
+  }
+
   nodo_destruir(nodo,NULL);
   return dato;
 }
@@ -194,6 +210,8 @@ void* abb_borrar_nodo_hoja(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const
 void* abb_borrar_nodo_un_hijo(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const char* clave){
   arbol->cantidad--;
   void* dato=nodo->dato;
+
+  /*
   if (padre->izquierda && arbol->comparar_clave(clave,padre->izquierda->clave)==0){
     if (nodo->izquierda) padre->izquierda=nodo->izquierda;
     else padre->izquierda=nodo->derecha;
@@ -202,6 +220,18 @@ void* abb_borrar_nodo_un_hijo(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,co
     if (nodo->izquierda) padre->derecha=nodo->izquierda;
     else padre->derecha=nodo->derecha;
   }
+  */
+
+  if ( padre ){
+
+    if ( padre->derecha && padre->derecha == nodo ) padre->derecho = nodo->derecha ? nodo->derecha : nodo->izquierda;
+    else padre->izquierda = nodo->izquierda ? nodo->izquierda : nodo->derecha;
+
+  }
+  // quieren borrar la raiz
+  else arbol->raiz = nodo->derecho ? nodo->derecho : nodo->izquierda;
+
+
   nodo_destruir(nodo,NULL);
   return dato;
 }
@@ -235,12 +265,19 @@ void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo){
 }
 
 void* abb_borrar(abb_t* arbol, const char* clave){
+
   if (arbol->cantidad==0) return NULL;
+
   abb_nodo_t* nodo=abb_nodo_buscar(arbol,arbol->raiz,clave);
+
   if (!nodo) return NULL;
+
   abb_nodo_t* padre=abb_padre_buscar(arbol,arbol->raiz,clave);
+
   if (!nodo->izquierda && !nodo->derecha) return abb_borrar_nodo_hoja(arbol,nodo,padre,clave);
+
   if (!nodo->izquierda || !nodo->derecha) return abb_borrar_nodo_un_hijo(arbol,nodo,padre,clave);
+
   return abb_borrar_nodo_dos_hijos(arbol,nodo);
 }
 
