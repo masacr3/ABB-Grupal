@@ -202,6 +202,8 @@ void* abb_borrar_nodo_hoja(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,const
     else padre->derecha=NULL;
 
   }
+  //la hoja es la raiz
+  else arbol->raiz = NULL;
 
   nodo_destruir(nodo,NULL);
   return dato;
@@ -224,12 +226,12 @@ void* abb_borrar_nodo_un_hijo(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre,co
 
   if ( padre ){
 
-    if ( padre->derecha && padre->derecha == nodo ) padre->derecho = nodo->derecha ? nodo->derecha : nodo->izquierda;
+    if ( padre->derecha && padre->derecha == nodo ) padre->derecha = nodo->derecha ? nodo->derecha : nodo->izquierda;
     else padre->izquierda = nodo->izquierda ? nodo->izquierda : nodo->derecha;
 
   }
   // quieren borrar la raiz
-  else arbol->raiz = nodo->derecho ? nodo->derecho : nodo->izquierda;
+  else arbol->raiz = nodo->derecha ? nodo->derecha : nodo->izquierda;
 
 
   nodo_destruir(nodo,NULL);
