@@ -244,8 +244,8 @@ abb_nodo_t* abb_nodo_profundo_buscar(abb_nodo_t* nodo){
   return abb_nodo_profundo_buscar(nodo->izquierda);
 }
 
-void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo){
-  abb_nodo_t* hijo_derecho=nodo->derecha;
+void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo, abb_nodo_t* padre){
+  /*abb_nodo_t* hijo_derecho=nodo->derecha;
   abb_nodo_t* nodo_profundo=abb_nodo_profundo_buscar(hijo_derecho->izquierda);
   char* clave_reemplazante;
   const char* clave_constante;
@@ -264,6 +264,30 @@ void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo){
   nodo->clave=clave_reemplazante;
   nodo->dato=dato_reemplazante;
   return dato;
+  */
+
+  if ( !nodo->derecha->izquierda ){
+    nodo->derecha->izquierda = nodo->izquierda;
+
+    return dato;
+  }
+
+  abb_nodo_t* susesor = abb_nodo_profundo_buscar(nodo->derecha->izquierda);
+
+  abb_nodo_t* padre_susesor = abb_padre_buscar(abb, nodo->derecha->izquierda, susesor->clave );
+
+  if ( susesor->derecha) padre_susesor->izquierda = susesor->derecha;
+  else padre_susesor->izquierda = NULL;
+
+  //swap nodo
+
+  susessor->derecha = nodo->derecha;
+  susessor->izquierda = nodo->izquierda;
+
+  //if borras la raiz .. arbol->raiz = susessor;
+
+  
+
 }
 
 void* abb_borrar(abb_t* arbol, const char* clave){
