@@ -1,8 +1,3 @@
-/*
-  Leo: hola marto vamos a hacer las pruebas en bloque unas vez constatado el OK
-  lo mandamos directamente pruebas_alumno.c
-
-*/
 #include "abb.h"
 #include "testing.h"
 
@@ -188,6 +183,13 @@ void p4(){
 	printf(".........e\n\n");
 
 	print_test("cantidad 8", abb_cantidad(abb) == 8);
+	print_test("(d) borrar ", *(int*)abb_borrar(abb,clave4) == 4);
+	print_test("(f) borrar ", *(int*)abb_borrar(abb,clave6) == 6);
+	print_test("(e) borrar ", *(int*)abb_borrar(abb,clave5) == 5);
+	print_test("cantidad 5", abb_cantidad(abb) == 5);
+	print_test("(b) borrar ", *(int*)abb_borrar(abb,clave2) == 2);
+	/*
+	print_test("cantidad 8", abb_cantidad(abb) == 8);
 	print_test("(a) borrar ", *(int*)abb_borrar(abb,clave1) == 1);
 	print_test("(c) borrar ", *(int*)abb_borrar(abb,clave3) == 3);
 	print_test("(e) borrar ", *(int*)abb_borrar(abb,clave5) == 5);
@@ -251,6 +253,33 @@ void p4(){
 	print_test("(b) no pertenece", !abb_pertenece(abb,clave2));
 	print_test("(g) no pertenece", !abb_pertenece(abb,clave6));
 
+	print_test("(d) borrar", *(int*)abb_borrar(abb,clave4) == 4);
+
+	printf("\narbol~~\n\n");
+	printf(".........x\n");
+	printf("......./...\\..\n");
+	printf("....../.....\\ \n");
+	printf(".....c.......f\n\n");
+
+	print_test("cantidad 2", abb_cantidad(abb) == 2);
+	print_test("(d) no pertenece", !abb_pertenece(abb,clave4));
+	print_test("(c) pertenece", abb_pertenece(abb,clave3));
+	print_test("(f) pertenece", abb_pertenece(abb,clave7));
+	print_test("(f) borrar", *(int*)abb_borrar(abb,clave7) == 7);
+
+	printf("\narbol~~\n\n");
+	printf(".........x\n");
+	printf("......./...\\..\n");
+	printf("....../.....\\ \n");
+	printf(".....c.......x\n\n");
+
+	printf("\narbol~~\n\n");
+	printf(".........c\n\n");
+
+	print_test("cantidad 1", abb_cantidad(abb) == 1);
+	print_test("(d) no pertenece", !abb_pertenece(abb,clave4));
+	print_test("(c) pertenece", abb_pertenece(abb,clave3));
+
 	print_test("(f) borrar", abb_borrar(abb,clave7));
 
 	printf("\narbol~~\n\n");
@@ -301,7 +330,7 @@ void p4(){
 
 	print_test("cantidad 1", abb_cantidad(abb) == 1);
 	print_test("(c) no pertenece", !abb_pertenece(abb,clave3));
-	print_test("(d) pertenece", abb_pertenece(abb,clave4));
+	print_test("(d) pertenece", abb_pertenece(abb,clave4));*/
 
 	abb_destruir(abb);
 }
