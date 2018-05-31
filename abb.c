@@ -276,11 +276,11 @@ void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo, abb_nodo_t* padre
       else padre->izquierda = nodo->derecha;
     }
     else{
-      nodo = nodo->izquierda
-      abb->raiz = nodo;
+      nodo->derecha->izquierda = nodo->izquierda;
+      abb->raiz = nodo->derecha->izquierda;
     }
 
-    //fijate que explota
+    //fijate que explota ahora no explota
     nodo_destruir(nodo, null); // esto explota
   }
   else{
