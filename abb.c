@@ -266,27 +266,44 @@ void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo, abb_nodo_t* padre
   return dato;
   */
 
+  void* dato;
+
   if ( !nodo->derecha->izquierda ){
-    nodo->derecha->izquierda = nodo->izquierda;
+    dato = nodo->dato;
 
-    return dato;
+    if (padre){
+      if ( padre->derecha && arbol->comparar_clave(nodo->clave, padre->deracha->clave) == 0) padre->derecha = nodo->derecha;
+      else padre->izquierda = nodo->derecha;
+    }
+    else{
+      nodo = nodo->izquierda
+      abb->raiz = nodo;
+    }
+
+    //fijate que explota
+    nodo_destruir(nodo, null); // esto explota
   }
+  else{
 
-  abb_nodo_t* susesor = abb_nodo_profundo_buscar(nodo->derecha->izquierda);
+    abb_nodo_t* susesor = abb_nodo_profundo_buscar(nodo->derecha->izquierda);
 
-  abb_nodo_t* padre_susesor = abb_padre_buscar(abb, nodo->derecha->izquierda, susesor->clave );
+    abb_nodo_t* padre_susesor = abb_padre_buscar(abb, nodo->derecha->izquierda, susesor->clave );
 
-  if ( susesor->derecha) padre_susesor->izquierda = susesor->derecha;
-  else padre_susesor->izquierda = NULL;
+    if ( susesor->derecha) padre_susesor->izquierda = susesor->derecha;
+    else padre_susesor->izquierda = NULL;
 
-  //swap nodo
+    //swap nodo
 
-  susessor->derecha = nodo->derecha;
-  susessor->izquierda = nodo->izquierda;
+    susessor->derecha = nodo->derecha;
+    susessor->izquierda = nodo->izquierda;
 
-  //if borras la raiz .. arbol->raiz = susessor;
+    //if borras la raiz .. arbol->raiz = susessor;
 
-  
+    if (padre){
+      if ( padre->derecha && arbol->comparar_clave(nodo->clave, padre->deracha->clave) == 0) padre->derecha = susessor;
+      else padre->izquierda = susessor;
+    }
+  }
 
 }
 
