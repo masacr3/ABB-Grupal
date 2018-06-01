@@ -15,11 +15,11 @@ static void prueba_crear_abb_vacio()
   printf("INICIANDO PRUEBAS ABB VACIO\n");
     abb_t* abb = abb_crear(strcmp,NULL);
 
-    print_test("Prueba hash crear hash vacio", abb);
-    print_test("Prueba hash la cantidad de elementos es 0", abb_cantidad(abb) == 0);
-    print_test("Prueba hash obtener clave A, es NULL, no existe", !abb_obtener(abb, "A"));
-    print_test("Prueba hash pertenece clave A, es false, no existe", !abb_pertenece(abb, "A"));
-    print_test("Prueba hash borrar clave A, es NULL, no existe", !abb_borrar(abb, "A"));
+    print_test("Prueba abb crear hash vacio", abb);
+    print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+    print_test("Prueba abb obtener clave A, es NULL, no existe", !abb_obtener(abb, "A"));
+    print_test("Prueba abb pertenece clave A, es false, no existe", !abb_pertenece(abb, "A"));
+    print_test("Prueba abb borrar clave A, es NULL, no existe", !abb_borrar(abb, "A"));
 
     abb_destruir(abb);
 }
