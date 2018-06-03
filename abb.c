@@ -144,7 +144,6 @@ bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato
 
     //actualizo
     raiz->dato = dato;
-    arbol->cantidad++;
   }
 
   if(rama < 0 ){
@@ -172,7 +171,6 @@ bool insertar_nodo (abb_t* arbol,abb_nodo_t* raiz, const char* clave, void* dato
   }
   return true;
 }
-
 
 bool abb_guardar(abb_t* arbol, const char* clave, void* dato){
 
@@ -284,7 +282,7 @@ void* abb_borrar_nodo_dos_hijos(abb_t* arbol,abb_nodo_t* nodo,abb_nodo_t* padre)
     else arbol->raiz=reemplazante;
 
   }
-  
+
   nodo_destruir(nodo,NULL);
   return dato;
 }
@@ -327,7 +325,6 @@ void* abb_borrar(abb_t* arbol, const char* clave){
   if (!nodo->izquierda || !nodo->derecha) return abb_borrar_nodo_un_hijo(arbol,nodo,padre,clave);
 
   return abb_borrar_nodo_dos_hijos(arbol,nodo,padre);
-  //return abb_borrar_nodo_dos_hijos(arbol,nodo);
 }
 
 void abb_destruir_nodos(abb_nodo_t* nodo,abb_destruir_dato_t destruir_dato){
@@ -341,7 +338,6 @@ void abb_destruir(abb_t* arbol){
   abb_destruir_nodos(arbol->raiz,arbol->destruir_dato);
   free(arbol);
 }
-
 
 /*******************************************************************************
  *                           ITERADOR INTERNO
@@ -386,7 +382,6 @@ const char* abb_iter_in_ver_actual(const abb_iter_t* iter){
   if (pila_esta_vacia(iter->pila)) return NULL;
   abb_nodo_t* nodo_actual=pila_ver_tope(iter->pila);
   return nodo_actual->clave;
-  //return pila_esta_vacia(iter->pila)? NULL:pila_ver_tope(iter->pila)->clave;
 }
 
 bool abb_iter_in_al_final(const abb_iter_t* iter){
