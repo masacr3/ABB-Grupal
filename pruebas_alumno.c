@@ -1,10 +1,14 @@
 #include "abb.h"
+#include "hash.h"
 #include "testing.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
+
+#define CANTIDAD_PRUEBAS_VOLUMEN 5000
 
 static void prueba_crear_abb_vacio()
 {
@@ -165,122 +169,72 @@ static void prueba_abb_borrar()
 static void prueba_abb_volumen()
 {
   printf("INICIANDO PREUBAS ABB VOLUMEN\n");
-    abb_t* abb = abb_crear(strcmp,NULL);
+    abb_t* arbol = abb_crear(strcmp,NULL);
+    hash_t* hash = hash_crear(NULL);
 
-    char *clave1 = "perro", *valor1 = "guau";
-    char *clave2 = "gato", *valor2 = "miau";
-    char *clave3 = "vaca", *valor3 = "mu";
-    char *clave4 = "chancho", *valor4 = "oing";
-    char *clave5 = "Martin", *valor5 = "peludo";
-    char *clave6 = "Leo", *valor6 = "metalero";
-    char *clave7 = "Gian", *valor7 = "corrector";
-    char *clave8 = "Papa", *valor8 = "Francisco";
-    char *clave9 = "Tesla", *valor9 = "autazos";
-    char *clave10 = "cola", *valor10 = "nodo";
-    char *clave11 = "COD", *valor11 = "tiros";
-    char *clave12 = "FIFA", *valor12 = "futbol";
-    char *clave13 = "ATP", *valor13 = "tenis";
-    char *clave14 = "asado", *valor14 = "argentino";
-    char *clave15 = "fernet", *valor15 = "cordobes";
-    char* clave16 = "Lenovo", *valor16 = "Motorola";
-    char *clave17 = "Apple", *valor17 = "IPhone";
-    char *clave18 = "Fiuba", *valor18 = "jodida";
-    char *clave19 = "fisica", *valor19 = "Newton";
-    char *clave20 = "ARM", *valor20 = "microprocesador";
+    const size_t largo_clave = 10;
+    char (*claves)[largo_clave] = malloc(CANTIDAD_PRUEBAS_VOLUMEN * largo_clave);
 
-    /* Inserta 20 parejas en el abb */
+    unsigned valores[CANTIDAD_PRUEBAS_VOLUMEN];
+
     bool ok = true;
-    ok = abb_guardar(abb, clave1, valor1);
-    ok = abb_guardar(abb, clave2, valor2);
-    ok = abb_guardar(abb, clave3, valor3);
-    ok = abb_guardar(abb, clave4, valor4);
-    ok = abb_guardar(abb, clave5, valor5);
-    ok = abb_guardar(abb, clave6, valor6);
-    ok = abb_guardar(abb, clave7, valor7);
-    ok = abb_guardar(abb, clave8, valor8);
-    ok = abb_guardar(abb, clave9, valor9);
-    ok = abb_guardar(abb, clave10, valor10);
-    ok = abb_guardar(abb, clave11, valor11);
-    ok = abb_guardar(abb, clave12, valor12);
-    ok = abb_guardar(abb, clave13, valor13);
-    ok = abb_guardar(abb, clave14, valor14);
-    ok = abb_guardar(abb, clave15, valor15);
-    ok = abb_guardar(abb, clave16, valor16);
-    ok = abb_guardar(abb, clave17, valor17);
-    ok = abb_guardar(abb, clave18, valor18);
-    ok = abb_guardar(abb, clave19, valor19);
-    ok = abb_guardar(abb, clave20, valor20);
+    for (unsigned i = 0; i < CANTIDAD_PRUEBAS_VOLUMEN; i++){
+      srand(i);
+      sprintf(claves[i], "%d", rand() % 300000);
+
+      if (hash_pertenece(hash, claves[i])){
+        bool pertenece = true;
+        unsigned k = 0;
+
+        while (pertenece){
+          srand(k * (unsigned)time(NULL) + 13);
+          sprintf(claves[i], "%d", rand() % 300000);
+
+          if (hash_pertenece(hash, claves[i])){
+            k++;
+            continue;
+          }
+
+          pertenece = false;
+        }
+
+      }
+
+      valores[i] = i;
+      ok = hash_guardar(hash, claves[i], &valores[i]);
+      ok = abb_guardar(arbol, claves[i], &valores[i]);
+
+      if (!ok) break;
+
+    }
 
     print_test("Prueba abb almacenar muchos elementos", ok);
-    print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == 20);
+    print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(arbol) == CANTIDAD_PRUEBAS_VOLUMEN);
 
-    /* Verifica que devuelva los valores correctos */
-    ok = abb_pertenece(abb, clave1);
-    ok = abb_pertenece(abb, clave2);
-    ok = abb_pertenece(abb, clave3);
-    ok = abb_pertenece(abb, clave4);
-    ok = abb_pertenece(abb, clave5);
-    ok = abb_pertenece(abb, clave6);
-    ok = abb_pertenece(abb, clave7);
-    ok = abb_pertenece(abb, clave8);
-    ok = abb_pertenece(abb, clave9);
-    ok = abb_pertenece(abb, clave10);
-    ok = abb_pertenece(abb, clave11);
-    ok = abb_pertenece(abb, clave12);
-    ok = abb_pertenece(abb, clave13);
-    ok = abb_pertenece(abb, clave14);
-    ok = abb_pertenece(abb, clave15);
-    ok = abb_pertenece(abb, clave16);
-    ok = abb_pertenece(abb, clave17);
-    ok = abb_pertenece(abb, clave18);
-    ok = abb_pertenece(abb, clave19);
-    ok = abb_pertenece(abb, clave20);
+    for (int i = 0; i<CANTIDAD_PRUEBAS_VOLUMEN; i++){
+      ok = abb_pertenece(arbol, claves[i]);
+      ok = *(unsigned*)abb_obtener(arbol, claves[i]) == valores[i];
 
-    ok = abb_obtener(abb, clave1) == valor1;
-    ok = abb_obtener(abb, clave2) == valor2;
-    ok = abb_obtener(abb, clave3) == valor3;
-    ok = abb_obtener(abb, clave4) == valor4;
-    ok = abb_obtener(abb, clave5) == valor5;
-    ok = abb_obtener(abb, clave6) == valor6;
-    ok = abb_obtener(abb, clave7) == valor7;
-    ok = abb_obtener(abb, clave8) == valor8;
-    ok = abb_obtener(abb, clave9) == valor9;
-    ok = abb_obtener(abb, clave10) == valor10;
-    ok = abb_obtener(abb, clave11) == valor11;
-    ok = abb_obtener(abb, clave12) == valor12;
-    ok = abb_obtener(abb, clave13) == valor13;
-    ok = abb_obtener(abb, clave14) == valor14;
-    ok = abb_obtener(abb, clave15) == valor15;
-    ok = abb_obtener(abb, clave16) == valor16;
-    ok = abb_obtener(abb, clave17) == valor17;
-    ok = abb_obtener(abb, clave18) == valor18;
-    ok = abb_obtener(abb, clave19) == valor19;
-    ok = abb_obtener(abb, clave20) == valor20;
+      if (!ok) break;
+
+    }
 
     print_test("Prueba abb pertenece y obtener muchos elementos", ok);
-    print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == 20);
+    print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(arbol) == CANTIDAD_PRUEBAS_VOLUMEN);
 
-    /* Verifica que borre 15 elementosy devuelva los valores correctos */
-    ok = abb_borrar(abb, clave1) == valor1;
-    ok = abb_borrar(abb, clave2) == valor2;
-    ok = abb_borrar(abb, clave3) == valor3;
-    ok = abb_borrar(abb, clave4) == valor4;
-    ok = abb_borrar(abb, clave5) == valor5;
-    ok = abb_borrar(abb, clave6) == valor6;
-    ok = abb_borrar(abb, clave7) == valor7;
-    ok = abb_borrar(abb, clave15) == valor12;
-    ok = abb_borrar(abb, clave13) == valor13;
-    ok = abb_borrar(abb, clave18) == valor18;
-    ok = abb_borrar(abb, clave15) == valor15;
-    ok = abb_borrar(abb, clave19) == valor19;
-    ok = abb_borrar(abb, clave20) == valor20;
-    ok = abb_borrar(abb, clave10) == valor10;
-    ok = abb_borrar(abb, clave9) == valor9;
+    for (int i = 0; i<CANTIDAD_PRUEBAS_VOLUMEN; i++){
+      ok = *(unsigned*)abb_borrar(arbol, claves[i]) == valores[i];
+
+      if (!ok) break;
+
+    }
 
     print_test("Prueba abb borrar muchos elementos", ok);
-    print_test("Prueba abb la cantidad de elementos es 6", abb_cantidad(abb) == 6);
+    print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(arbol) == 0);
 
-    abb_destruir(abb);
+    free(claves);
+    hash_destruir(hash);
+    abb_destruir(arbol);
 }
 
 bool imprimir_todas(const char* clave,void* dato,void* extra){
